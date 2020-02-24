@@ -1,5 +1,7 @@
 var inquirer = require("inquirer");
 var fs = require("fs");
+const os = require("os");
+var axios = require("axios");
 
 const questions = [
   {
@@ -49,8 +51,8 @@ const questions = [
   }
 ];
 
-function writeToFile(fileUserName, data) {
-  fs.writeFile(fileUserName, JSON.stringify(data, null, "\t"), function(err) {
+function writeToFile(questions, data) {
+  fs.writeFile(questions, data.join(""), function(err) {
     if (err) {
       return console.log(err);
     }
@@ -61,6 +63,15 @@ function writeToFile(fileUserName, data) {
 function init() {
   inquirer.prompt(questions).then(function(data) {
     let gitHubUserName = data.gitHubUserName;
+    const queryUrl = `https://api.github.com/users/${gitHubUserName}`;
+    const axiosCall = axios.get(queryUrl).then(function(res) {
+      const bio = res.bio;
+      return fs.appendFile("readme.md", bio, function(err) {
+        if (err) {
+          throw err;
+        }
+      });
+    });
     let title = data.title;
     let description = data.description;
     let tableOfContents = data.tableOfContents;
@@ -70,18 +81,17 @@ function init() {
     let contributing = data.contributing;
     let tests = data.tests;
 
-    writeToFile(
-      "readme.md",
-      gitHubUserName,
-      title,
-      description,
-      tableOfContents,
-      installation,
-      usage,
-      licence,
-      contributing,
-      tests
-    );
+    writeToFile("readme.md", [
+      "# " + title + "\n",
+      "## Profile image" + "\n" + axiosCall + "\n",
+      "## Description" + "\n\n" + description + "\n\n",
+      "## Table of content" + "\n" + tableOfContents + "\n\n",
+      "## Installation" + "\n" + installation + "\n\n",
+      "## Usage" + "\n" + usage + "\n\n",
+      "## License" + "\n" + licence + "\n\n",
+      "## Contributing" + "\n" + contributing + "\n\n",
+      "## Tests" + "\n" + tests
+    ]);
   });
 }
 
