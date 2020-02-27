@@ -10,7 +10,7 @@ and showcase my work to potential employers and clients. It is in that spirit th
 
 <strong>Programs used</strong>
 
-I used Javascript, Node.js, Github API and Git/Github as version controlnd.
+I used Javascript, Node.js, Github API and Git/Github as version control.
 
 <strong>Installation</strong>
 
