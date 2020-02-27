@@ -64,34 +64,34 @@ function init() {
   inquirer.prompt(questions).then(function(data) {
     let gitHubUserName = data.gitHubUserName;
     const queryUrl = `https://api.github.com/users/${gitHubUserName}`;
-    const axiosCall = axios.get(queryUrl).then(function(res) {
-      const bio = res.bio;
-      return fs.appendFile("readme.md", bio, function(err) {
-        if (err) {
-          throw err;
-        }
-      });
-    });
-    let title = data.title;
-    let description = data.description;
-    let tableOfContents = data.tableOfContents;
-    let installation = data.installation;
-    let usage = data.usage;
-    let licence = data.licence;
-    let contributing = data.contributing;
-    let tests = data.tests;
+    axios.get(queryUrl).then(function(res) {
+      let bio = res.data.bio;
+      let image = res.data.avatar_url;
+      let title = data.title;
+      let description = data.description;
+      let tableOfContents = data.tableOfContents;
+      let installation = data.installation;
+      let usage = data.usage;
+      let licence = data.licence;
+      let contributing = data.contributing;
+      let tests = data.tests;
 
-    writeToFile("readme.md", [
-      "# " + title + "\n",
-      "## Profile image" + "\n" + axiosCall + "\n",
-      "## Description" + "\n\n" + description + "\n\n",
-      "## Table of content" + "\n" + tableOfContents + "\n\n",
-      "## Installation" + "\n" + installation + "\n\n",
-      "## Usage" + "\n" + usage + "\n\n",
-      "## License" + "\n" + licence + "\n\n",
-      "## Contributing" + "\n" + contributing + "\n\n",
-      "## Tests" + "\n" + tests
-    ]);
+      writeToFile("README.md", [
+        "# " + title + "\n",
+        "## Developer bio" +
+          "\n" +
+          `![alt text](${image} "Profile picture")` +
+          "\n\n",
+        bio + "\n",
+        "## Project description" + "\n\n" + description + "\n\n",
+        "## Table of content" + "\n" + tableOfContents + "\n\n",
+        "## Installation" + "\n" + installation + "\n\n",
+        "## Usage" + "\n" + usage + "\n\n",
+        "## License" + "\n" + licence + "\n\n",
+        "## Contributing" + "\n" + contributing + "\n\n",
+        "## Tests" + "\n" + tests
+      ]);
+    });
   });
 }
 
